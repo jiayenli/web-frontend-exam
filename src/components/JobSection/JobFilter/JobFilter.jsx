@@ -3,7 +3,7 @@ import { useMediaQuery } from '@mui/material'
 import { TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
 import { useState, useEffect } from 'react'
 
-export default function JobFilter({ options, onSubmit }) {
+export default function JobFilter({ options, onSubmit, onReset }) {
   const isMobile = useMediaQuery('(max-width:768px)')
 
   const [filter, setFilter] = useState({ keyword: '', salary: 0, education: 0 })
@@ -12,8 +12,8 @@ export default function JobFilter({ options, onSubmit }) {
 
   useEffect(() => {
     setFilter({ keyword: '', salary: 0, education: 0 })
-    onSubmit({ keyword: '', salary: 0, education: 0 })
-  }, [isMobile])
+    onReset()
+  }, [isMobile, onReset])
 
   return (
     <div className={styles.JobFilter}>
