@@ -11,6 +11,10 @@
     justify-content: center;
     width: 32px;
     height: 32px;
+    &[disabled] {
+      cursor: not-allowed;
+      opacity: 0.2;
+    }
   }
   ul {
     @include text-style(2);

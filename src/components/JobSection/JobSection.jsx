@@ -1,102 +1,135 @@
 import styles from './JobSection.module.scss'
-import TextField from '@mui/material/TextField'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import InputLabel from '@mui/material/InputLabel'
-import FormControl from '@mui/material/FormControl'
 import JobCard from './JobCard/JobCard'
 import Pagination from '../Common/Pagination/Pagination'
 import JobModal from './JobModal/JobModal'
+import JobFilter from './JobFilter/JobFilter'
+import { useState, useEffect, useMemo, useRef } from 'react'
+import { useMediaQuery } from '@mui/material'
 
 export default function JobSection() {
+  const jobRef = useRef(null)
+
+  const [jobList, setJobList] = useState([])
+  const [educationOptions, setEducationOptions] = useState([])
+  const [salaryOptions, setSalaryOptions] = useState([])
+
+  const [filteredJobs, setFilteredJobs] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const isMobile = useMediaQuery('(max-width:768px)')
+  const pageSize = isMobile ? 4 : 6
+
+  // 初始載入職缺與選項列表
+  useEffect(() => {
+    async function fetchJobs() {
+      try {
+        const [jobRes, eduRes, salaryRes] = await Promise.all([
+          fetch('/api/v1/jobs'),
+          fetch('/api/v1/educationLevelList'),
+          fetch('/api/v1/salaryLevelList'),
+        ])
+
+        if (!jobRes.ok || !eduRes.ok || !salaryRes.ok) {
+          throw new Error('API 請求失敗')
+        }
+
+        const { data: jobData } = await jobRes.json()
+        const eduData = await eduRes.json()
+        const salaryData = await salaryRes.json()
+
+        setJobList(jobData)
+        setEducationOptions(eduData)
+        setSalaryOptions(salaryData)
+        setFilteredJobs(jobData)
+      } catch (error) {
+        console.error('Error fetching jobs:', error)
+      }
+    }
+    fetchJobs()
+  }, [])
+
+  // 教育程度Map表
+  const educationMap = useMemo(() => {
+    if (!educationOptions || educationOptions.length === 0) {
+      return {}
+    }
+    return educationOptions.reduce((acc, curr) => {
+      acc[curr.id] = curr.label
+      return acc
+    }, {})
+  }, [educationOptions])
+
+  // 薪資選項Map表
+  const salaryMap = useMemo(() => {
+    if (!salaryOptions || salaryOptions.length === 0) {
+      return {}
+    }
+    return salaryOptions.reduce((acc, curr) => {
+      acc[curr.id] = curr.label
+      return acc
+    }, {})
+  }, [salaryOptions])
+
+  // 顯示的工作列表（根據篩選出來的資料，做分頁與字詞轉換）
+  const displayJobs = useMemo(() => {
+    const start = (currentPage - 1) * pageSize
+    const end = start + pageSize
+    const pageJobs = filteredJobs.slice(start, end)
+
+    return pageJobs.map(job => ({
+      jobTitle: job.jobTitle || '職位名稱為提供',
+      companyName: job.companyName || '無公司名稱未提供',
+      education: educationMap[job.educationId] || '學歷未提供',
+      salary: salaryMap[job.salaryId] || '待遇未提供',
+      preview: job.preview || '職位描述未提供',
+    }))
+  }, [filteredJobs, educationMap, salaryMap, currentPage, pageSize])
+
+  // 分頁功能
+  const handlePageChange = page => {
+    if (page < 1 || page > Math.ceil(filteredJobs.length / pageSize)) return
+    setCurrentPage(page)
+    setTimeout(() => {
+      jobRef.current.scrollIntoView({ behavior: 'smooth' })
+    }, 100)
+  }
+
+  //篩選功能
+  const handleFilter = filterData => {
+    const result = jobList.filter(job => {
+      const matchSalary = filterData.salary ? job.salaryId === filterData.salary : true
+      const matchEdu = filterData.education ? job.educationId === filterData.education : true
+      const matchKeyword = filterData.keyword
+        ? job.jobTitle.includes(filterData.keyword) ||
+          job.companyName.includes(filterData.keyword) ||
+          job.preview.includes(filterData.keyword)
+        : true
+      return matchSalary && matchEdu && matchKeyword
+    })
+    setFilteredJobs(result)
+    handlePageChange(1)
+  }
+
   return (
-    <div className={styles.job}>
+    <div className={styles.job} ref={jobRef}>
       <div className={styles.content}>
         <h2>適合前端工程師的好工作</h2>
-        <div className={styles.filter}>
-          <TextField
-            slotProps={{
-              inputLabel: { shrink: true },
-            }}
-            label="公司名稱"
-            placeholder="請輸入公司名稱"
-            sx={{ width: '50%' }}
-          />
-          <FormControl sx={{ width: '25%' }}>
-            <InputLabel id="filter-education-label">教育程度</InputLabel>
-            <Select
-              labelId="filter-education-label"
-              id="filter-education"
-              defaultValue={20}
-              label="教育程度"
-            >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl sx={{ width: '25%' }}>
-            <InputLabel id="filter-salary-label" shrink={true}>
-              薪水範圍
-            </InputLabel>
-            <Select
-              labelId="filter-salary-label"
-              id="filter-salary"
-              label="薪水範圍"
-              defaultValue={20}
-            >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
-            </Select>
-          </FormControl>
-          <button className={styles.filterButton}>條件搜尋</button>
-        </div>
-
-        <div className={styles.jobEmpty}>無資料</div>
+        <JobFilter
+          options={{ educationOptions, salaryOptions }}
+          onSubmit={handleFilter}
+        ></JobFilter>
+        {displayJobs.length === 0 && <div className={styles.jobEmpty}>無資料</div>}
         <div className={styles.jobList}>
-          <JobCard
-            job={{
-              title: '前端工程師',
-              company: 'HeeLoo',
-              education: '學歷',
-              salary: 'NT$ 60,000 - 80,000',
-              description:
-                '負責網站前端開發，使用 React.js 與 Vue.js 等技術。負責網站前端開發，使用 React.js 與 Vue.js 等技術。負責網站前端開發，使用 React.js 與 Vue.js 等技術。負責網站前端開發，使用 React.js 與 Vue.js 等技術。',
-            }}
-          ></JobCard>
-          <JobCard
-            job={{
-              title: '前端工程師',
-              company: 'HeeLoo',
-              education: '學歷',
-              salary: 'NT$ 60,000 - 80,000',
-              description:
-                '負責網站前端開發，使用 React.js 與 Vue.js 等技術。負責網站前端開發，使用 React.js 與 Vue.js 等技術。負責網站前端開發，使用 React.js 與 Vue.js 等技術。負責網站前端開發，使用 React.js 與 Vue.js 等技術。',
-            }}
-          ></JobCard>
-          <JobCard
-            job={{
-              title: '前端工程師',
-              company: 'HeeLoo',
-              education: '學歷',
-              salary: 'NT$ 60,000 - 80,000',
-              description:
-                '負責網站前端開發，使用 React.js 與 Vue.js 等技術。負責網站前端開發，使用 React.js 與 Vue.js 等技術。負責網站前端開發，使用 React.js 與 Vue.js 等技術。負責網站前端開發，使用 React.js 與 Vue.js 等技術。',
-            }}
-          ></JobCard>
-          <JobCard
-            job={{
-              title: '前端工程師',
-              company: 'HeeLoo',
-              education: '學歷',
-              salary: 'NT$ 60,000 - 80,000',
-              description:
-                '負責網站前端開發，使用 React.js 與 Vue.js 等技術。負責網站前端開發，使用 React.js 與 Vue.js 等技術。負責網站前端開發，使用 React.js 與 Vue.js 等技術。負責網站前端開發，使用 React.js 與 Vue.js 等技術。',
-            }}
-          ></JobCard>
+          {displayJobs.map((job, index) => (
+            <JobCard key={index} job={job} />
+          ))}
         </div>
-        <Pagination />
+        <Pagination
+          currentPage={currentPage}
+          totalPage={Math.ceil(filteredJobs.length / pageSize)}
+          maxVisible={isMobile ? 6 : 9}
+          onPageChange={handlePageChange}
+        />
       </div>
       <JobModal
         open={false}

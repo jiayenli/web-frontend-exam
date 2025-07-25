@@ -28,27 +28,6 @@
         margin-right: 12px;
       }
     }
-    .filter {
-      display: flex;
-      gap: 18px;
-      button {
-        flex-shrink: 0;
-        width: 108px;
-        @include text-style(3);
-        background-color: $color-gray-700;
-        color: $color-gray-100;
-        padding: 8px 16px;
-        border-radius: 4px;
-        transition:
-          background-color 0.2s ease-in-out,
-          color 0.2s ease-in-out;
-
-        &:hover {
-          background-color: $color-orange-700;
-          color: white;
-        }
-      }
-    }
     .jobEmpty {
       @include text-style(3);
       color: $color-gray-700;
@@ -68,19 +47,9 @@
   }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 960px) {
   .job {
-    padding-bottom: 12px;
     .content {
-      border-radius: 0;
-      width: 100%;
-      margin: 0 auto 0;
-      h2 {
-        @include text-style(4, 700);
-      }
-      .filter {
-        display: none;
-      }
       .jobList {
         grid-template-columns: repeat(2, 1fr);
       }
@@ -88,12 +57,26 @@
   }
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 768px) {
   .job {
+    padding-bottom: 12px;
     .content {
+      border-radius: 0;
+      width: 100%;
+      margin: 0 auto 0;
       .jobEmpty {
         height: 258px;
       }
+      h2 {
+        @include text-style(4, 700);
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .job {
+    .content {
       .jobList {
         grid-template-columns: 1fr;
       }

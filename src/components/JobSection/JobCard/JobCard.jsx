@@ -6,11 +6,11 @@ import PersonIcon from '../../Common/Icons/PersonIcon'
 export default function JobCard({ job }) {
   return (
     <div className={styles.JobCard}>
-      <h3>{job.company}</h3>
+      <h3>{job.companyName}</h3>
       <div className={styles.jobInfo}>
         <p>
           <PersonIcon />
-          {job.title}
+          {job.jobTitle}
         </p>
         <p>
           <BookIcon />
@@ -21,7 +21,7 @@ export default function JobCard({ job }) {
           {job.salary}
         </p>
       </div>
-      <p className={styles.jobDetail}>{job.description}</p>
+      <p className={styles.jobDetail}>{job.preview}</p>
       <button className={styles.applyButton}>查看細節</button>
     </div>
   )
