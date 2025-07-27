@@ -128,7 +128,7 @@ export default function Carousel({
         observer.disconnect()
       }
     }
-  }, [images, isLoop, imageWidth, gap])
+  }, [images, isLoop, imageWidth, gap, handleNext])
 
   useEffect(() => {
     return () => {

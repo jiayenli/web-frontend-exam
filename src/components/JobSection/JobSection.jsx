@@ -125,9 +125,7 @@ export default function JobSection() {
         const matchSalary = filterData.salary ? job.salaryId === filterData.salary : true
         const matchEdu = filterData.education ? job.educationId === filterData.education : true
         const matchKeyword = filterData.keyword
-          ? job.jobTitle.includes(filterData.keyword) ||
-            job.companyName.includes(filterData.keyword) ||
-            job.preview.includes(filterData.keyword)
+          ? job.companyName.includes(filterData.keyword)
           : true
         return matchSalary && matchEdu && matchKeyword
       })

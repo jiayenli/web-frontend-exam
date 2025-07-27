@@ -4,7 +4,6 @@ import styles from './JobModal.module.scss'
 import DOMPurify from 'dompurify'
 import { Skeleton } from '@mui/material'
 import Carousel from '../../Common/Carousel/Carousel'
-import { Opacity } from '@mui/icons-material'
 
 const HtmlContent = ({ html }) => {
   const cleanHtml = DOMPurify.sanitize(splitLiWithBr(html))
