@@ -2,6 +2,7 @@
   "name": "yile-frontend-exam",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://jiayenli.github.io/web-frontend-exam",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
