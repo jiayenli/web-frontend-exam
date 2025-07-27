@@ -1,0 +1,55 @@
+@import '../../../styles/shared';
+
+.JobCard {
+  min-height: 220px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid $color-gray-500;
+  border-radius: 6px;
+  transition: 0.2s ease-in-out;
+  &:hover {
+    box-shadow: 0px 0px 8px 0px #00000059;
+  }
+
+  h3 {
+    @include text-style(5, 700);
+    color: $color-gray-1000;
+  }
+  .jobInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    p {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      @include text-style(2);
+      color: $color-gray-800;
+    }
+  }
+  .jobDetail {
+    @include text-style(2);
+    flex: 1;
+    color: $color-gray-1000;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  button {
+    @include text-style(2, 700);
+    color: $color-orange-700;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .JobCard {
+    h3 {
+      @include text-style(3, 700);
+    }
+  }
+}

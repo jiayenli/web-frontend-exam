@@ -1,0 +1,85 @@
+@import '../../styles/shared';
+
+.job {
+  position: relative;
+  z-index: 1;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding-bottom: 28px;
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 95%;
+    padding: 24px;
+    border-radius: 12px;
+    margin: -8.5% auto 0;
+    background-color: $color-gray-100;
+    h2 {
+      @include text-style(5, 700);
+      color: $color-gray-1000;
+      &::before {
+        content: '';
+        display: inline-block;
+        width: 4px;
+        height: 16px;
+        border-radius: 4px;
+        background-color: $color-orange-700;
+        margin-right: 12px;
+      }
+    }
+    .jobEmpty {
+      @include text-style(3);
+      color: $color-gray-700;
+      border: 1px solid $color-gray-500;
+      height: 458px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      border-radius: 4px;
+    }
+    .jobList {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+  }
+}
+
+@media screen and (max-width: 960px) {
+  .job {
+    .content {
+      .jobList {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .job {
+    padding-bottom: 12px;
+    .content {
+      border-radius: 0;
+      width: 100%;
+      margin: 0 auto 0;
+      .jobEmpty {
+        height: 258px;
+      }
+      h2 {
+        @include text-style(4, 700);
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .job {
+    .content {
+      .jobList {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+}

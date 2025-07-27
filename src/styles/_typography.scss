@@ -1,0 +1,26 @@
+// _typography.scss
+
+$text-sizes: (
+  1: 12px,
+  2: 14px,
+  3: 16px,
+  4: 20px,
+  5: 24px,
+  6: 28px,
+  7: 34px,
+  8: 40px,
+  9: 48px,
+);
+
+@mixin text-style($key, $weight: 400) {
+  $size: map-get($text-sizes, $key);
+
+  @if $size == null {
+    @error "未找到對應的字體大小，請檢查 key 是否正確。";
+  }
+
+  font-weight: $weight;
+  font-size: $size;
+  line-height: 125%;
+  letter-spacing: 0%;
+}
