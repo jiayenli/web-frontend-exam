@@ -1,9 +1,9 @@
-import styles from './Kv.module.scss'
-import kvPeople from '../../assets/kv-people.png'
+import { useRef, useState, useEffect } from 'react'
 import leftEye from '../../assets/kv-left-eye.png'
+import kvPeople from '../../assets/kv-people.png'
 import rightEye from '../../assets/kv-right-eye.png'
 import slogan from '../../assets/kv-slogan.png'
-import { useRef, useState, useEffect } from 'react'
+import styles from './Kv.module.scss'
 
 export default function Kv() {
   const rightEyeRef = useRef(null)
@@ -22,7 +22,9 @@ export default function Kv() {
       leftEyePosition.current = leftEyeRef.current.getBoundingClientRect()
     }
 
-    requestAnimationFrame(updateRect)
+    setTimeout(() => {
+      updateRect()
+    }, 200)
 
     window.addEventListener('resize', updateRect)
     window.addEventListener('scroll', updateRect, true) // scroll 滾動也可能改變位置
@@ -37,8 +39,8 @@ export default function Kv() {
   useEffect(() => {
     const handleMouseMove = e => {
       if (!rightEyePosition.current || !leftEyePosition.current) return
-      //計算兩眼的區域，滑鼠在兩眼區域眼球不移動
-      let eyeView = {
+      // 計算兩眼的區域，滑鼠在兩眼區域眼球不移動
+      const eyeView = {
         left: Math.min(rightEyePosition.current.left, leftEyePosition.current.left),
         right: Math.max(rightEyePosition.current.right, leftEyePosition.current.right),
         top: Math.min(rightEyePosition.current.top, leftEyePosition.current.top),
@@ -52,7 +54,7 @@ export default function Kv() {
 
       if (e.clientX < eyeView.left) {
         leftMoveX = Math.min(eyeView.left - e.clientX, (leftEyePosition.current.width * 2) / 3) * -1
-        rightMoveX = Math.min(eyeView.left - e.clientX, rightEyePosition.current.width / 2) * -1
+        rightMoveX = Math.min(eyeView.left - e.clientX, rightEyePosition.current.width / 3) * -1
       } else if (e.clientX > eyeView.right) {
         leftMoveX = Math.min(e.clientX - eyeView.right, leftEyePosition.current.width / 10)
         rightMoveX = Math.min(e.clientX - eyeView.right, rightEyePosition.current.width / 15)

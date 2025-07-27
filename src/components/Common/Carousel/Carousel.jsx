@@ -1,5 +1,5 @@
-import styles from './Carousel.module.scss'
 import { useRef, useEffect, useState, useCallback } from 'react'
+import styles from './Carousel.module.scss'
 
 export default function Carousel({
   images = [],
@@ -17,6 +17,7 @@ export default function Carousel({
   const timerRef = useRef(null)
   const isLoop = useRef(false)
   const perCount = useRef(0)
+  const isEndAnimation = useRef(false)
 
   // 切換圖片
   const handleNext = useCallback(
@@ -43,7 +44,7 @@ export default function Carousel({
     [autoPlayInterval]
   )
 
-  //點擊點點切換
+  // 點擊點點切換
   const handleDotClick = useCallback(
     index => {
       if (isEndAnimation.current || !isLoop.current) return
@@ -56,7 +57,6 @@ export default function Carousel({
   // 拖曳事件處理
   const startX = useRef(0)
   const isDragging = useRef(false)
-  const isEndAnimation = useRef(false)
 
   // 處理拖曳開始
   const handleDragStart = e => {
@@ -83,13 +83,15 @@ export default function Carousel({
     isDragging.current = false
     if (dragDiff === 0) {
       handleNext(currentIndex, totalSlides.length)
+    } else if (dragDiff > 0) {
+      setCurrentIndex(prev => prev - 1)
     } else {
-      dragDiff > 0 ? setCurrentIndex(prev => prev - 1) : setCurrentIndex(prev => prev + 1)
+      setCurrentIndex(prev => prev + 1)
     }
     setDragDiff(0)
   }
 
-  //擴展圖片列表，包含頭尾各複製比可見數量＋1張圖片
+  // 擴展圖片列表，包含頭尾各複製比可見數量＋1張圖片
   const lastRun = useRef(0)
   useEffect(() => {
     const carousel = carouselRef.current
@@ -101,24 +103,23 @@ export default function Carousel({
 
         setIsCarouselTransition(false)
         const entry = entries[0]
-        const width = entry.contentRect.width
+        const { width } = entry.contentRect
         perCount.current = Math.floor(width / (imageWidth + gap))
         isLoop.current = perCount.current < images.length
+        const imagesWithIndex = images.map((img, index) => ({
+          src: img,
+          activeIndex: index,
+        }))
 
         if (isLoop.current) {
-          const imagesWithIndex = images.map((img, index) => ({
-            src: img,
-            activeIndex: index,
-          }))
-
           const startImages = imagesWithIndex.slice(0, perCount.current + 1)
           const endImages = imagesWithIndex.slice(-perCount.current - 1)
           setTotalSlides([...endImages, ...imagesWithIndex, ...startImages])
-          //預設顯示中間的圖片
+          // 預設顯示中間的圖片
           setCurrentIndex(perCount.current + 1)
           handleNext(perCount.current + 1, startImages.length + images.length + endImages.length)
         } else {
-          setTotalSlides(images)
+          setTotalSlides(imagesWithIndex)
           setCurrentIndex(0)
         }
       })
@@ -137,6 +138,7 @@ export default function Carousel({
   }, [])
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       style={{ opacity: imgReady ? 1 : 0 }}
       className={styles.carousel}
@@ -163,6 +165,7 @@ export default function Carousel({
       >
         {totalSlides.map((image, index) => (
           <div
+            // eslint-disable-next-line react/no-array-index-key
             key={index}
             className={styles.carouselImage}
             style={{
@@ -173,14 +176,14 @@ export default function Carousel({
           </div>
         ))}
       </div>
-      {imgReady && (
+      {imgReady && isLoop.current && (
         <div className={styles.carouselDots}>
           {images.map((_, index) => (
             <span
               key={index}
-              className={`${styles.dot} ${index === totalSlides[currentIndex]?.activeIndex ? styles.active : ''}`}
+              className={`${styles.dot} ${index === totalSlides[currentIndex].activeIndex ? styles.active : ''}`}
               onClick={() => handleDotClick(index)}
-            ></span>
+            />
           ))}
         </div>
       )}

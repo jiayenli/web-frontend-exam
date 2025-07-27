@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Web Frontend Exam",
+  "name": "Web Frontend Exam - Jamie",
+  "description": "這是一份 Yile 前端工程師的徵才專案",
   "icons": [
     {
       "src": "favicon.ico",

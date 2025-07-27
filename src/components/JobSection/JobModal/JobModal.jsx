@@ -1,14 +1,9 @@
-import { useState, useRef } from 'react'
-import Modal from '@mui/material/Modal'
-import styles from './JobModal.module.scss'
-import DOMPurify from 'dompurify'
 import { Skeleton } from '@mui/material'
+import Modal from '@mui/material/Modal'
+import DOMPurify from 'dompurify'
+import { useState, useRef } from 'react'
 import Carousel from '../../Common/Carousel/Carousel'
-
-const HtmlContent = ({ html }) => {
-  const cleanHtml = DOMPurify.sanitize(splitLiWithBr(html))
-  return <div dangerouslySetInnerHTML={{ __html: cleanHtml }} />
-}
+import styles from './JobModal.module.scss'
 
 const splitLiWithBr = htmlString => {
   return htmlString.replace(/<li>([\s\S]*?)<\/li>/g, (_, content) => {
@@ -20,6 +15,12 @@ const splitLiWithBr = htmlString => {
       .join('\n')
     return segments
   })
+}
+
+function HtmlContent({ html }) {
+  const cleanHtml = DOMPurify.sanitize(splitLiWithBr(html))
+  // eslint-disable-next-line react/no-danger
+  return <div dangerouslySetInnerHTML={{ __html: cleanHtml }} />
 }
 
 export default function JobModal({ open, onClose, job, isLoading }) {
@@ -71,11 +72,7 @@ export default function JobModal({ open, onClose, job, isLoading }) {
               />
             </div>
             {job.companyPhoto && job.companyPhoto.length > 0 && (
-              <Carousel
-                onReady={handleImageLoad}
-                images={job.companyPhoto}
-                imgReady={imgReady}
-              ></Carousel>
+              <Carousel onReady={handleImageLoad} images={job.companyPhoto} imgReady={imgReady} />
             )}
           </div>
           <div className={styles.jobDetails}>
@@ -101,7 +98,9 @@ export default function JobModal({ open, onClose, job, isLoading }) {
           </div>
         </div>
         <footer className={styles.jobFooter}>
-          <button onClick={onClose}>關閉</button>
+          <button type="button" onClick={onClose}>
+            關閉
+          </button>
         </footer>
       </div>
     </Modal>

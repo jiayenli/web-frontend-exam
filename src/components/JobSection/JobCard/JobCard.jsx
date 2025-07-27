@@ -1,8 +1,8 @@
-import styles from './JobCard.module.scss'
-import SalaryIcon from '../../Common/Icons/SalaryIcon'
+import { Skeleton } from '@mui/material'
 import BookIcon from '../../Common/Icons/BookIcon'
 import PersonIcon from '../../Common/Icons/PersonIcon'
-import { Skeleton } from '@mui/material'
+import SalaryIcon from '../../Common/Icons/SalaryIcon'
+import styles from './JobCard.module.scss'
 
 export default function JobCard({ job, onModalOpen, isSkeleton = false }) {
   return (
@@ -53,6 +53,7 @@ export default function JobCard({ job, onModalOpen, isSkeleton = false }) {
         <>
           <p className={styles.jobDetail}>{job.preview}</p>
           <button
+            type="button"
             className={styles.applyButton}
             onClick={() => {
               onModalOpen(job.id)

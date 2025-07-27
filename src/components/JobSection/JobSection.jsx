@@ -1,10 +1,10 @@
-import styles from './JobSection.module.scss'
-import JobCard from './JobCard/JobCard'
-import Pagination from '../Common/Pagination/Pagination'
-import JobModal from './JobModal/JobModal'
-import JobFilter from './JobFilter/JobFilter'
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useMediaQuery } from '@mui/material'
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
+import Pagination from '../Common/Pagination/Pagination'
+import JobCard from './JobCard/JobCard'
+import JobFilter from './JobFilter/JobFilter'
+import JobModal from './JobModal/JobModal'
+import styles from './JobSection.module.scss'
 
 export default function JobSection() {
   const jobRef = useRef(null)
@@ -47,8 +47,6 @@ export default function JobSection() {
         setEducationOptions(eduData)
         setSalaryOptions(salaryData)
         setFilteredJobs(jobData)
-      } catch (error) {
-        console.error('Error fetching jobs:', error)
       } finally {
         setIsLoading(false)
       }
@@ -107,16 +105,18 @@ export default function JobSection() {
     page => {
       handlePageChange(page)
       setTimeout(() => {
-        jobRef.current?.scrollIntoView({ behavior: 'smooth' })
+        if (jobRef.current) {
+          jobRef.current.scrollIntoView({ behavior: 'smooth' })
+        }
       }, 100)
     },
     [handlePageChange]
   )
 
-  //篩選功能
+  // 篩選功能
   const handleResetFilter = useCallback(() => {
     setFilteredJobs(jobList)
-    setCurrentPage(1)
+    handlePageChange(1)
   }, [jobList])
 
   const handleFilter = useCallback(
@@ -133,7 +133,9 @@ export default function JobSection() {
       setFilteredJobs(result)
       handlePageChange(1)
       setTimeout(() => {
-        jobRef.current?.scrollIntoView({ behavior: 'smooth' })
+        if (jobRef.current) {
+          jobRef.current.scrollIntoView({ behavior: 'smooth' })
+        }
       }, 100)
     },
     [jobList, handlePageChange]
@@ -151,7 +153,7 @@ export default function JobSection() {
       const jobData = await job.json()
       setJobModalData({ ...jobData })
     } catch (error) {
-      console.error('Error opening job modal:', error)
+      setJobModalData(null)
     } finally {
       setIsJobModalLoading(false)
     }
@@ -170,13 +172,13 @@ export default function JobSection() {
           options={{ educationOptions, salaryOptions }}
           onSubmit={handleFilter}
           onReset={handleResetFilter}
-        ></JobFilter>
+        />
         {displayJobs.length === 0 && !isLoading && <div className={styles.jobEmpty}>無資料</div>}
         <div className={styles.jobList}>
           {isLoading ? (
             <>
               {Array.from({ length: pageSize }).map((_, index) => (
-                <JobCard key={index} isSkeleton={true} />
+                <JobCard key={index} isSkeleton />
               ))}
             </>
           ) : (
@@ -200,10 +202,10 @@ export default function JobSection() {
           onClose={handleJobModalClose}
           isLoading={isJobModalLoading}
           job={{
-            companyName: jobModalData?.companyName || '公司名稱未提供',
-            jobTitle: jobModalData?.jobTitle || '職位名稱未提供',
-            description: jobModalData?.description || '職位描述未提供',
-            companyPhoto: jobModalData?.companyPhoto || '',
+            companyName: (jobModalData && jobModalData.companyName) || '公司名稱未提供',
+            jobTitle: (jobModalData && jobModalData.jobTitle) || '職位名稱未提供',
+            description: (jobModalData && jobModalData.description) || '職位描述未提供',
+            companyPhoto: (jobModalData && jobModalData.companyPhoto) || '',
           }}
         />
       )}

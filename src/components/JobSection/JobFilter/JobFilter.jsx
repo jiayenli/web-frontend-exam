@@ -1,7 +1,6 @@
-import styles from './JobFilter.module.scss'
-import { useMediaQuery } from '@mui/material'
-import { TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
+import { useMediaQuery, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
 import { useState, useEffect } from 'react'
+import styles from './JobFilter.module.scss'
 
 export default function JobFilter({ options, onSubmit, onReset }) {
   const isMobile = useMediaQuery('(max-width:768px)')
@@ -26,7 +25,7 @@ export default function JobFilter({ options, onSubmit, onReset }) {
         sx={{ width: '50%' }}
       />
       <FormControl sx={{ width: '25%' }}>
-        <InputLabel id="filter-education-label" shrink={true}>
+        <InputLabel id="filter-education-label" shrink>
           教育程度
         </InputLabel>
         <Select
@@ -37,15 +36,15 @@ export default function JobFilter({ options, onSubmit, onReset }) {
           label="教育程度"
         >
           <MenuItem value={0}>不限</MenuItem>
-          {educationOptions.map((edu, index) => (
-            <MenuItem key={index} value={edu.id}>
+          {educationOptions.map(edu => (
+            <MenuItem key={edu.id} value={edu.id}>
               {edu.label}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
       <FormControl sx={{ width: '25%' }}>
-        <InputLabel id="filter-salary-label" shrink={true}>
+        <InputLabel id="filter-salary-label" shrink>
           薪水範圍
         </InputLabel>
         <Select
@@ -56,14 +55,14 @@ export default function JobFilter({ options, onSubmit, onReset }) {
           label="薪水範圍"
         >
           <MenuItem value={0}>不限</MenuItem>
-          {salaryOptions.map((sal, index) => (
-            <MenuItem key={index} value={sal.id}>
+          {salaryOptions.map(sal => (
+            <MenuItem key={sal.id} value={sal.id}>
               {sal.label}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
-      <button className={styles.filterButton} onClick={() => onSubmit(filter)}>
+      <button type="submit" className={styles.filterButton} onClick={() => onSubmit(filter)}>
         條件搜尋
       </button>
     </div>

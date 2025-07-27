@@ -30,6 +30,7 @@ export default function Pagination({ totalPage, currentPage, onPageChange, maxVi
   return (
     <div className={styles.pagination}>
       <button
+        type="button"
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage === 1 ? 1 : currentPage - 1)}
       >
@@ -39,12 +40,15 @@ export default function Pagination({ totalPage, currentPage, onPageChange, maxVi
         {pages.map(page => {
           return (
             <li key={page} className={page === currentPage ? styles.active : ''}>
-              <button onClick={() => onPageChange(page)}>{page}</button>
+              <button type="button" onClick={() => onPageChange(page)}>
+                {page}
+              </button>
             </li>
           )
         })}
       </ul>
       <button
+        type="button"
         disabled={currentPage === totalPage}
         onClick={() => onPageChange(currentPage === totalPage ? totalPage : currentPage + 1)}
       >
