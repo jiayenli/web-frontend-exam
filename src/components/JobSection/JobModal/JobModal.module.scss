@@ -37,6 +37,11 @@
         color: $color-gray-1000;
       }
     }
+    .jobImages {
+      width: 100%;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
     .jobDetails {
       @include text-style(3);
       color: $color-gray-800;
