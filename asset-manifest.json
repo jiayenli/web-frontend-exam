@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/static/css/main.4aab50bc.css",
+    "main.js": "/static/js/main.e230bfab.js",
+    "static/media/kv-bg.png": "/static/media/kv-bg.44d7ba73089b9eea9c81.png",
+    "static/media/kv-people.png": "/static/media/kv-people.f739d99242e9dd227090.png",
+    "static/media/kv-slogan.png": "/static/media/kv-slogan.7f7c703775df934c98ef.png",
+    "index.html": "/index.html",
+    "main.4aab50bc.css.map": "/static/css/main.4aab50bc.css.map",
+    "main.e230bfab.js.map": "/static/js/main.e230bfab.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4aab50bc.css",
+    "static/js/main.e230bfab.js"
+  ]
+}
